@@ -18,18 +18,38 @@ export default function Page() {
   }, []);
 
   return (
-    <div style={{ margin: 10 }}>
-      <h3>Brands</h3>
-      <hr />
-      <ul>
-        {listBrand.map((brand: any, i) => (
-          <li key={i}>
-            <Link href={`/brand/${brand.body_html}?name=${brand.title}`}>
-              {brand.title}
-            </Link>
-          </li>
-        ))}
-      </ul>
+    <div className="bg-gray-50">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-2xl py-16 sm:py-24 lg:max-w-none lg:py-32">
+          <h2 className="text-2xl text-black font-bold leading-7 sm:truncate sm:text-3xl sm:tracking-tight mb-10">
+            Brands
+          </h2>
+          <hr />
+          <ul role="list" className="divide-y divide-gray-100">
+            {listBrand.map((brand: any) => (
+              <li key={brand.id} className="flex justify-between gap-x-6 py-5">
+                <Link
+                  href={`/brand/${brand.body_html}`}
+                  className="self-center text-gray-900"
+                >
+                  <div className="flex min-w-0 gap-x-4">
+                    {brand?.image && (
+                      <img
+                        className="h-12 w-12 flex-none bg-gray-50"
+                        src={brand?.image?.src}
+                        alt={brand.title}
+                      />
+                    )}
+                    <div className="min-w-0 flex items-center">
+                      {brand.title}
+                    </div>
+                  </div>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
     </div>
   );
 }
