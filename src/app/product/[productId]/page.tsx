@@ -98,6 +98,20 @@ export default function Page({ params }: any) {
                 className="h-full w-full object-cover object-center"
               />
             </div>
+            <div className="aspect-h-2 aspect-w-3 overflow-hidden rounded-lg">
+              <img
+                src={productData?.images?.[2]?.src}
+                alt={productData?.title}
+                className="h-full w-full object-cover object-center"
+              />
+            </div>
+          </div>
+          <div className="aspect-h-5 aspect-w-4 lg:aspect-h-4 lg:aspect-w-3 sm:overflow-hidden sm:rounded-lg">
+            <img
+              src={productData?.images?.[3]?.src}
+              alt={productData?.title}
+              className="h-full w-full object-cover object-center"
+            />
           </div>
         </div>
 
