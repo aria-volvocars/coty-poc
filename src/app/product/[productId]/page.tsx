@@ -4,11 +4,13 @@ import { useEffect, useState } from "react";
 import { getDetailCollection } from "@/component/fetchDetailCollection";
 import { getDetailProduct } from "@/component/fetchDetailProduct";
 import { useSearchParams } from "next/navigation";
+import { RadioGroup } from "@headlessui/react";
 
 export default function Page({ params }: any) {
   const searchParams = useSearchParams();
   const [collectionData, setCollectionData] = useState<any>();
   const [productData, setProductData] = useState<any>();
+  const [selectedSize, setSelectedSize] = useState<any>();
   const brandId = searchParams.get("brand");
   const collectionId = searchParams.get("collection");
 
@@ -26,11 +28,16 @@ export default function Page({ params }: any) {
     const product = async () => {
       const data = await getDetailProduct(params.productId);
       data && setProductData(data.product);
+      data && setSelectedSize(data.product.variants[0]);
     };
 
     product();
     return () => {};
   }, [params.productId]);
+
+  const classNames = (...classes: any[]) => {
+    return classes.filter(Boolean).join(" ");
+  };
 
   return (
     <div className="bg-white">
@@ -106,7 +113,10 @@ export default function Page({ params }: any) {
           <div className="mt-4 lg:row-span-3 lg:mt-0">
             <h2 className="sr-only">Product information</h2>
             <p className="text-3xl tracking-tight text-gray-900">
-              {productData?.variants?.[0]?.price}
+              {new Intl.NumberFormat("en-US", {
+                style: "currency",
+                currency: "USD",
+              }).format(productData?.variants?.[0]?.price)}
             </p>
 
             <form className="mt-10">
@@ -122,7 +132,7 @@ export default function Page({ params }: any) {
                   </a>
                 </div>
 
-                {/* <RadioGroup
+                <RadioGroup
                   value={selectedSize}
                   onChange={setSelectedSize}
                   className="mt-4"
@@ -131,14 +141,14 @@ export default function Page({ params }: any) {
                     Choose a size
                   </RadioGroup.Label>
                   <div className="grid grid-cols-4 gap-4 sm:grid-cols-8 lg:grid-cols-4">
-                    {product.sizes.map((size) => (
+                    {productData?.variants?.map((size: any) => (
                       <RadioGroup.Option
-                        key={size.name}
+                        key={size.id}
                         value={size}
-                        disabled={!size.inStock}
+                        disabled={!size.inventory_quantity}
                         className={({ active }) =>
                           classNames(
-                            size.inStock
+                            !!size.inventory_quantity
                               ? "cursor-pointer bg-white text-gray-900 shadow-sm"
                               : "cursor-not-allowed bg-gray-50 text-gray-200",
                             active ? "ring-2 ring-indigo-500" : "",
@@ -149,9 +159,9 @@ export default function Page({ params }: any) {
                         {({ active, checked }) => (
                           <>
                             <RadioGroup.Label as="span">
-                              {size.name}
+                              {size.title}
                             </RadioGroup.Label>
-                            {size.inStock ? (
+                            {!!size.inventory_quantity ? (
                               <span
                                 className={classNames(
                                   active ? "border" : "border-2",
@@ -188,7 +198,7 @@ export default function Page({ params }: any) {
                       </RadioGroup.Option>
                     ))}
                   </div>
-                </RadioGroup> */}
+                </RadioGroup>
               </div>
 
               <button
@@ -205,9 +215,10 @@ export default function Page({ params }: any) {
             <div>
               <h3 className="sr-only">Description</h3>
 
-              <div className="space-y-6 text-base text-gray-900">
-                {productData?.body_html}
-              </div>
+              <div
+                className="space-y-6 text-base text-gray-900"
+                dangerouslySetInnerHTML={{ __html: productData?.body_html }}
+              />
             </div>
           </div>
         </div>
