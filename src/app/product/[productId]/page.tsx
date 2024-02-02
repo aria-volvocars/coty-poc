@@ -17,7 +17,7 @@ export default function Page({ params }: any) {
   useEffect(() => {
     const collection = async () => {
       const data = await getDetailCollection(collectionId);
-      data && setCollectionData(data.collection);
+      data && setCollectionData(data.data.collections.nodes[0]);
     };
 
     collection();
@@ -27,8 +27,8 @@ export default function Page({ params }: any) {
   useEffect(() => {
     const product = async () => {
       const data = await getDetailProduct(params.productId);
-      data && setProductData(data.product);
-      data && setSelectedSize(data.product.variants[0]);
+      data && setProductData(data.data.product);
+      data && setSelectedSize(data.data.product.variants.nodes[0]);
     };
 
     product();
@@ -71,7 +71,9 @@ export default function Page({ params }: any) {
             )}
             <li className="text-sm">
               <a
-                href={`/product/${productData?.id}?brand=${brandId}&collection=${collectionId}`}
+                href={`/product/${productData?.id.substring(
+                  22
+                )}?brand=${brandId}&collection=${collectionId}`}
                 aria-current="page"
                 className="font-medium text-gray-500 hover:text-gray-600"
               >
@@ -85,7 +87,7 @@ export default function Page({ params }: any) {
         <div className="mx-auto mt-6 max-w-2xl sm:px-6 lg:grid lg:max-w-7xl lg:grid-cols-3 lg:gap-x-8 lg:px-8">
           <div className="aspect-h-4 aspect-w-3 hidden overflow-hidden rounded-lg lg:block">
             <img
-              src={productData?.images?.[0]?.src}
+              src={productData?.images?.nodes?.[0]?.url}
               alt={productData?.title}
               className="h-full w-full object-cover object-center"
             />
@@ -93,14 +95,14 @@ export default function Page({ params }: any) {
           <div className="hidden lg:grid lg:grid-cols-1 lg:gap-y-8">
             <div className="aspect-h-2 aspect-w-3 overflow-hidden rounded-lg">
               <img
-                src={productData?.images?.[1]?.src}
+                src={productData?.images?.nodes?.[1]?.url}
                 alt={productData?.title}
                 className="h-full w-full object-cover object-center"
               />
             </div>
             <div className="aspect-h-2 aspect-w-3 overflow-hidden rounded-lg">
               <img
-                src={productData?.images?.[2]?.src}
+                src={productData?.images?.nodes?.[2]?.url}
                 alt={productData?.title}
                 className="h-full w-full object-cover object-center"
               />
@@ -108,7 +110,7 @@ export default function Page({ params }: any) {
           </div>
           <div className="aspect-h-5 aspect-w-4 lg:aspect-h-4 lg:aspect-w-3 sm:overflow-hidden sm:rounded-lg">
             <img
-              src={productData?.images?.[3]?.src}
+              src={productData?.images?.nodes?.[3]?.url}
               alt={productData?.title}
               className="h-full w-full object-cover object-center"
             />
@@ -130,7 +132,7 @@ export default function Page({ params }: any) {
               {new Intl.NumberFormat("en-US", {
                 style: "currency",
                 currency: "USD",
-              }).format(productData?.variants?.[0]?.price)}
+              }).format(productData?.priceRange?.minVariantPrice?.amount)}
             </p>
 
             <form className="mt-10">
@@ -155,14 +157,14 @@ export default function Page({ params }: any) {
                     Choose a size
                   </RadioGroup.Label>
                   <div className="grid grid-cols-4 gap-4 sm:grid-cols-8 lg:grid-cols-4">
-                    {productData?.variants?.map((size: any) => (
+                    {productData?.variants?.nodes?.map((size: any) => (
                       <RadioGroup.Option
                         key={size.id}
                         value={size}
-                        disabled={!size.inventory_quantity}
+                        disabled={!size.quantityAvailable}
                         className={({ active }) =>
                           classNames(
-                            !!size.inventory_quantity
+                            !!size.quantityAvailable
                               ? "cursor-pointer bg-white text-gray-900 shadow-sm"
                               : "cursor-not-allowed bg-gray-50 text-gray-200",
                             active ? "ring-2 ring-indigo-500" : "",
@@ -175,7 +177,7 @@ export default function Page({ params }: any) {
                             <RadioGroup.Label as="span">
                               {size.title}
                             </RadioGroup.Label>
-                            {!!size.inventory_quantity ? (
+                            {!!size.quantityAvailable ? (
                               <span
                                 className={classNames(
                                   active ? "border" : "border-2",
@@ -231,7 +233,7 @@ export default function Page({ params }: any) {
 
               <div
                 className="space-y-6 text-base text-gray-900"
-                dangerouslySetInnerHTML={{ __html: productData?.body_html }}
+                dangerouslySetInnerHTML={{ __html: productData?.description }}
               />
             </div>
           </div>

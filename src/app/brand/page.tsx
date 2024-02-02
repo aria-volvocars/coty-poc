@@ -10,7 +10,7 @@ export default function Page() {
   useEffect(() => {
     const brands = async () => {
       const data = await getProducts();
-      data && setListBrand(data.products);
+      data && setListBrand(data.data.collections.nodes[0].products.nodes);
     };
 
     brands();
@@ -29,14 +29,14 @@ export default function Page() {
             {listBrand.map((brand: any) => (
               <li key={brand.id} className="flex justify-between gap-x-6 py-5">
                 <Link
-                  href={`/brand/${brand.body_html}`}
+                  href={`/brand/${brand.description}`}
                   className="self-center text-gray-900"
                 >
                   <div className="flex min-w-0 gap-x-4">
-                    {brand?.image && (
+                    {brand?.featuredImage && (
                       <img
                         className="h-12 w-12 flex-none bg-gray-50"
-                        src={brand?.image?.src}
+                        src={brand?.featuredImage?.url}
                         alt={brand.title}
                       />
                     )}

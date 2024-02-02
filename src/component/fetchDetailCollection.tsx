@@ -1,12 +1,34 @@
 export const getDetailCollection = async (id: any = null) => {
   if (id) {
     const resp = await fetch(
-      `${process.env.NEXT_PUBLIC_SHOPIFY_BACKEND_API}/admin/api/2024-01/collections/${id}.json`,
+      `${process.env.NEXT_PUBLIC_SHOPIFY_BACKEND_API}/api/2024-01/graphql.json`,
       {
-        method: "GET",
+        method: "POST",
         headers: {
-          "X-Shopify-Access-Token": `${process.env.NEXT_PUBLIC_SHOPIFY_TOKEN}`,
+          "X-Shopify-Storefront-Access-Token": `${process.env.NEXT_PUBLIC_SHOPIFY_TOKEN}`,
+          "Content-Type": "application/json",
         },
+        body: JSON.stringify({
+          query: `query Collections($first: Int!, $query: String!) {
+            collections(first: $first, query: $query) {
+              nodes {
+                id
+                title
+                description
+                image {
+                  id
+                  url
+                  width
+                  height
+                }
+              }
+            }
+          }`,
+          variables: {
+            first: 1,
+            query: `id:${id}`,
+          },
+        }),
       }
     );
     if (resp && resp.ok) {

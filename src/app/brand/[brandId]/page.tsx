@@ -12,9 +12,10 @@ export default function Page({ params }: any) {
   useEffect(() => {
     const collection = async () => {
       const data1 = await getDetailCollection(params.brandId);
-      data1 && setCollectionData(data1.collection);
+      data1 && setCollectionData(data1.data.collections.nodes[0]);
       const data2 = await getProducts(params.brandId);
-      data2 && setListCollection(data2.products);
+      data2 &&
+        setListCollection(data2.data.collections.nodes[0].products.nodes);
     };
 
     collection();
@@ -34,14 +35,14 @@ export default function Page({ params }: any) {
               <div key={collection.id} className="group relative">
                 <div className="relative h-80 w-full overflow-hidden rounded-lg bg-white sm:aspect-h-1 sm:aspect-w-2 lg:aspect-h-1 lg:aspect-w-1 group-hover:opacity-75 sm:h-64">
                   <img
-                    src={collection?.image?.src}
+                    src={collection?.featuredImage?.url}
                     alt={collection?.title}
                     className="h-full w-full object-cover object-center"
                   />
                 </div>
                 <h3 className="mt-6 text-base font-semibold text-gray-900">
                   <Link
-                    href={`/brand/${params.brandId}/collection/${collection.body_html}`}
+                    href={`/brand/${params.brandId}/collection/${collection.description}`}
                   >
                     <span className="absolute inset-0" />
                     {collection.title}

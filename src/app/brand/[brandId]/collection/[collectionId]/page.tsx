@@ -12,9 +12,9 @@ export default function Page({ params }: any) {
   useEffect(() => {
     const product = async () => {
       const data1 = await getDetailCollection(params.collectionId);
-      data1 && setCollectionData(data1.collection);
+      data1 && setCollectionData(data1.data.collections.nodes[0]);
       const data2 = await getProducts(params.collectionId);
-      data2 && setListProduct(data2.products);
+      data2 && setListProduct(data2.data.collections.nodes[0].products.nodes);
     };
 
     product();
@@ -31,12 +31,14 @@ export default function Page({ params }: any) {
           {listProduct.map((product: any) => (
             <Link
               key={product.id}
-              href={`/product/${product.id}?brand=${params.brandId}&collection=${params.collectionId}`}
+              href={`/product/${product.id.substring(22)}?brand=${
+                params.brandId
+              }&collection=${params.collectionId}`}
               className="group"
             >
               <div className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-lg bg-gray-200 xl:aspect-h-8 xl:aspect-w-7">
                 <img
-                  src={product?.image?.src}
+                  src={product?.featuredImage?.url}
                   alt={product?.title}
                   className="h-full w-full object-cover object-center group-hover:opacity-75"
                 />
@@ -46,7 +48,7 @@ export default function Page({ params }: any) {
                 {new Intl.NumberFormat("en-US", {
                   style: "currency",
                   currency: "USD",
-                }).format(product.variants[0].price)}
+                }).format(product.priceRange.minVariantPrice.amount)}
               </p>
             </Link>
           ))}
