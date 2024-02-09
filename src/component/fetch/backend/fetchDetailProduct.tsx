@@ -1,11 +1,13 @@
+"use server";
+
 export const getDetailProduct = async (id: any = null) => {
   if (id) {
     const resp = await fetch(
-      `${process.env.NEXT_PUBLIC_SHOPIFY_BACKEND_API}/api/2024-01/graphql.json`,
+      `${process.env.SHOPIFY_BACKEND_API}/api/2024-01/graphql.json`,
       {
         method: "POST",
         headers: {
-          "X-Shopify-Storefront-Access-Token": `${process.env.NEXT_PUBLIC_SHOPIFY_TOKEN}`,
+          "X-Shopify-Storefront-Access-Token": `${process.env.SHOPIFY_TOKEN}`,
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
@@ -64,9 +66,7 @@ export const getDetailProduct = async (id: any = null) => {
         }),
       }
     );
-    if (resp && resp.ok) {
-      return await resp.json();
-    }
+    return resp;
   }
   return null;
 };

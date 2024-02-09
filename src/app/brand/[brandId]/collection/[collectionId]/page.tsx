@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { getProducts } from "@/component/fetchProducts";
-import { getDetailCollection } from "@/component/fetchDetailCollection";
+import { getProducts } from "@/component/fetch/frontend/fetchProductList";
+import { getCollectionDetail } from "@/component/fetch/frontend/fetchCollectionDetail";
 import Link from "next/link";
 
 export default function Page({ params }: any) {
@@ -11,7 +11,7 @@ export default function Page({ params }: any) {
 
   useEffect(() => {
     const product = async () => {
-      const data1 = await getDetailCollection(params.collectionId);
+      const data1 = await getCollectionDetail(params.collectionId);
       data1 && setCollectionData(data1.data.collections.nodes[0]);
       const data2 = await getProducts(params.collectionId);
       data2 && setListProduct(data2.data.collections.nodes[0].products.nodes);

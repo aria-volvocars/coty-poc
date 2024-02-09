@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { getDetailCollection } from "@/component/fetchDetailCollection";
-import { getDetailProduct } from "@/component/fetchDetailProduct";
+import { getCollectionDetail } from "@/component/fetch/frontend/fetchCollectionDetail";
+import { getProductDetail } from "@/component/fetch/frontend/fetchProductDetail";
 import { useSearchParams } from "next/navigation";
 import { RadioGroup } from "@headlessui/react";
 
@@ -16,7 +16,7 @@ export default function Page({ params }: any) {
 
   useEffect(() => {
     const collection = async () => {
-      const data = await getDetailCollection(collectionId);
+      const data = await getCollectionDetail(collectionId ?? "");
       data && setCollectionData(data.data.collections.nodes[0]);
     };
 
@@ -26,7 +26,7 @@ export default function Page({ params }: any) {
 
   useEffect(() => {
     const product = async () => {
-      const data = await getDetailProduct(params.productId);
+      const data = await getProductDetail(params.productId);
       data && setProductData(data.data.product);
       data && setSelectedSize(data.data.product.variants.nodes[0]);
     };
